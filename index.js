@@ -1,9 +1,10 @@
+require("dotenv").config();
 const Discord = require("discord.js");
-const { prefix, token } = require("./config.json");
 const ytdl = require("ytdl-core");
 
 const client = new Discord.Client();
 
+const prefix = "!";
 const queue = new Map();
 
 client.once("ready", () => {
@@ -128,4 +129,4 @@ function play(guild, song) {
   serverQueue.textChannel.send(`Start playing: **${song.title}**`);
 }
 
-client.login(token);
+client.login(process.env.BOT_TOKEN);

@@ -1,0 +1,29 @@
+{
+  "name": "CoolCarrotBot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jorgeserras/CoolCarrotBot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jorgeserras/CoolCarrotBot/issues"
+  },
+  "homepage": "https://github.com/jorgeserras/CoolCarrotBot#readme",
+  "dependencies": {
+    "@discordjs/opus": "^0.1.0",
+    "discord.js": "^12.0.2",
+    "dotenv": "^8.2.0",
+    "ffmpeg": "0.0.4",
+    "fluent-ffmpeg": "^2.1.2",
+    "ytdl-core": "^2.0.1"
+  }
+}
