@@ -107,6 +107,7 @@ function covid(message) {
     message.channel.send(res.data.latest);
   })
   req.on('error', error => {
+    console.log(error);
     message.channel.send(error);
   })
   req.end()
