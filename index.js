@@ -1,6 +1,14 @@
 require("dotenv").config();
 const Discord = require("discord.js");
 const ytdl = require("ytdl-core");
+const https = require('https');
+
+const options = {
+  hostname: 'coronavirus-tracker-api.herokuapp.com',
+  port: 8080,
+  path: '/v2/locations',
+  method: 'GET'
+}
 
 const client = new Discord.Client();
 
@@ -34,9 +42,11 @@ client.on("message", async message => {
   } else if (message.content.startsWith(`${prefix}stop`)) {
     stop(message, serverQueue);
     return;
-  } else if (message.content.startsWith(`${prefix}telogo`)){
+  } else if (message.content.startsWith(`${prefix}telogo`)) {
     message.channel.send("Ganda teloguinho!");
-  }else {
+  } else if (message.content.startsWith(`${prefix}covid`)) {
+    covid(message);
+  } else {
     message.channel.send("You need to enter a valid command!");
   }
 });
@@ -89,6 +99,16 @@ async function execute(message, serverQueue) {
     serverQueue.songs.push(song);
     return message.channel.send(`${song.title} has been added to the queue!`);
   }
+}
+
+function covid(message) {
+  const req = https.request(options, res => {
+    message.channel.send(res.data.current);
+  })
+  req.on('error', error => {
+    message.channel.send(error);
+  })
+  req.end()
 }
 
 function skip(message, serverQueue) {
