@@ -103,7 +103,8 @@ async function execute(message, serverQueue) {
 
 function covid(message) {
   const req = https.request(options, res => {
-    message.channel.send(res.data.current);
+    console.log(res.data);
+    message.channel.send(res.data.latest);
   })
   req.on('error', error => {
     message.channel.send(error);
