@@ -97,7 +97,7 @@ async function execute(message, serverQueue) {
 
 
 function covid(message) {
-  axios.get('coronavirus-tracker-api.herokuapp.com/v2/locations')
+  axios.get('coronavirus-tracker-api.herokuapp.com/v2/locations', { proxy: { host: '127.0.0.1', port: 1337 } })
     .then(res => {
       const { latest, locations } = res.data
       const args = message.content.split(" ");
