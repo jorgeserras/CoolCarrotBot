@@ -1,14 +1,8 @@
 require("dotenv").config();
 const Discord = require("discord.js");
 const ytdl = require("ytdl-core");
-const https = require('https');
+const axios = require('axios');
 
-const options = {
-  hostname: 'coronavirus-tracker-api.herokuapp.com',
-  port: 8080,
-  path: '/v2/locations',
-  method: 'GET'
-}
 
 const client = new Discord.Client();
 
@@ -101,16 +95,25 @@ async function execute(message, serverQueue) {
   }
 }
 
+
 function covid(message) {
-  const req = https.request(options, res => {
-    console.log(res.data);
-    message.channel.send(res.data.latest);
-  })
-  req.on('error', error => {
-    console.log(error);
-    message.channel.send(error);
-  })
-  req.end()
+  axios.get('coronavirus-tracker-api.herokuapp.com/v2/locations')
+    .then(res => {
+      const { latest, locations } = res.data
+      const args = message.content.split(" ");
+      let reply = '\`\`\`';
+      args.map(c => {
+        const country = locations.filter(l => l.country === c || l.country_code === c)
+        if(country.length > 0)
+          reply = reply + `${country.country_code} Confirmed: **${latest.confirmed}**
+            ${country.country_code} Deaths: **${latest.deaths}**
+            ${country.country_code} Recovered: **${latest.recovered}**
+            `
+      })
+      reply = reply + '\`\`\`';
+      message.channel.send(reply);
+    })
+    .catch(err => console.log(err))
 }
 
 function skip(message, serverQueue) {
