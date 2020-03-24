@@ -99,16 +99,15 @@ async function execute(message, serverQueue) {
 function covid(message) {
   axios.get('https://coronavirus-tracker-api.herokuapp.com/v2/locations') // , { proxy: { host: '127.0.0.1', port: 1337 } }
     .then(res => {
-      const { latest, locations } = res.data
+      const { locations } = res.data
       const args = message.content.split(" ");
       let reply = '\`\`\`';
       args.map(c => {
-        const country = locations.filter(l => l.country === c || l.country_code === c)
-        if(country.length > 0)
-          reply = reply + `${country.country_code} Confirmed: **${latest.confirmed}**
-            ${country.country_code} Deaths: **${latest.deaths}**
-            ${country.country_code} Recovered: **${latest.recovered}**
-            `
+        const countries = locations.filter(l => l.country === c || l.country_code === c)
+        if(countries.length > 0) {
+          const country = countries[0]
+          reply = reply + `${country.country_code} Confirmed: ${country.latest.confirmed} ${country.country_code} Deaths: ${country.latest.deaths} ${country.country_code} Recovered: ${country.latest.recovered} \n`
+        }
       })
       reply = reply + '\`\`\`';
       message.channel.send(reply);
