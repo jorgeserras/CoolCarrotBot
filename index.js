@@ -110,12 +110,14 @@ function covid(message) {
   console.log(args);
   let reply = '\`\`\`';
   args.map(c => {
-    const countries = countryCodes.countries.filter(l => l.name === c || l.acronym === c)
+    const countries = countryCodes.countries.filter(l => (l.name === c || l.acronym === c))
+    console.log(c, countries);
     if (countries.length > 0) {
       const country = countries[0]
       axios.get('https://telog-corona-tracker.herokuapp.com/api/countries/' + country.acronym)
         .then(res => {
           const { last_record } = res.data
+          console.log(last_record);
           reply = reply + `${country.name} Cases: ${last_record.cases} Active: ${last_record.active} Deaths: ${last_record.deaths} Recovered: ${last_record.recovered} Critical: ${last_record.critical} CasesPerOneMillion: ${last_record.casesPerOneMillion} \n`
         })
         .catch(err => console.log(err))
