@@ -123,6 +123,7 @@ function covid(message) {
     axios.get('https://telog-corona-tracker.herokuapp.com/api/countries/' + country.acronym)
       .then(res => {
         const { last_record } = res.data
+        console.log('last_record', last_record)
         return {
           Name: country.name,
           Cases: last_record.cases,
@@ -144,10 +145,8 @@ function covid(message) {
         const countries = countryCodes.countries.filter(l => (l.name === c || l.acronym === c))
         if (countries.length > 0) {
           const country = countries[0]
+          console.log('country', country)
           resolve(requestCountry(country))
-            .catch(err => {
-              console.log(err)
-            })
         }
       })
     });
@@ -156,6 +155,7 @@ function covid(message) {
   async function requestCountries(args) {
     return await requestCountryPromise(args)
       .then(data => {
+        console.log('data', data)
         obj.push(data)
       })
       .catch(err => {
@@ -165,7 +165,7 @@ function covid(message) {
 
   requestCountries(args)
     .then(() => {
-      console.log(obj)
+      console.log('obj', obj)
       reply = '::: info \n Requested **Covid-19** information. \n';
       const table = jsonToTable(obj, columns);
       reply = reply + table + ' \n';
