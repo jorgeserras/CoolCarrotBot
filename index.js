@@ -120,7 +120,7 @@ function covid(message) {
             const { last_record } = res.data
             console.log(last_record);
             reply = reply + `${country.name} Cases: ${last_record.cases} Active: ${last_record.active} Deaths: ${last_record.deaths} Recovered: ${last_record.recovered} Critical: ${last_record.critical} CasesPerOneMillion: ${last_record.casesPerOneMillion} \n`
-            if (i === args.length)
+            if (i === args.length - 1)
               resolve();
           })
           .catch(err => {
