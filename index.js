@@ -124,13 +124,13 @@ function covid(message) {
       .then(res => {
         const { last_record } = res.data
         return {
-          'Name': country.name,
-          'Cases': last_record.cases,
-          'Active': last_record.active,
-          'Deaths': last_record.deaths,
-          'Recovered': last_record.recovered,
-          'Critical': last_record.critical,
-          'CasesPerOneMillion': last_record.casesPerOneMillion,
+          Name: country.name,
+          Cases: last_record.cases,
+          Active: last_record.active,
+          Deaths: last_record.deaths,
+          Recovered: last_record.recovered,
+          Critical: last_record.critical,
+          CasesPerOneMillion: last_record.casesPerOneMillion,
         }
       })
       .catch(err => {
@@ -165,6 +165,7 @@ function covid(message) {
 
   requestCountries(args)
     .then(() => {
+      console.log(obj)
       reply = '::: info \n Requested **Covid-19** information. \n';
       const table = jsonToTable(obj, columns);
       reply = reply + table + ' \n';
