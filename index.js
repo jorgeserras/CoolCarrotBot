@@ -2,6 +2,7 @@ require("dotenv").config();
 const Discord = require("discord.js");
 const ytdl = require("ytdl-core");
 const axios = require('axios');
+const jsonToTable = require('json-to-markdown-table');
 
 const client = new Discord.Client();
 
@@ -106,8 +107,75 @@ async function execute(message, serverQueue) {
 function covid(message) {
   const args = message.content.split(" ");
   args.shift();
-  let reply = '\`\`\`';
-  new Promise((resolve, reject) =>
+  let reply = '';
+  const columns = [
+    'Name',
+    'Cases',
+    'Active',
+    'Deaths',
+    'Recovered',
+    'Critical',
+    'CasesPerOneMillion'
+  ];
+  const obj = [];
+
+  function requestCountry(country) {
+    axios.get('https://telog-corona-tracker.herokuapp.com/api/countries/' + country.acronym)
+      .then(res => {
+        const { last_record } = res.data
+        return {
+          'Name': country.name,
+          'Cases': last_record.cases,
+          'Active': last_record.active,
+          'Deaths': last_record.deaths,
+          'Recovered': last_record.recovered,
+          'Critical': last_record.critical,
+          'CasesPerOneMillion': last_record.casesPerOneMillion,
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
+  function requestCountryPromise(args) {
+    return new Promise(resolve => {
+      args.map(c => {
+        const countries = countryCodes.countries.filter(l => (l.name === c || l.acronym === c))
+        if (countries.length > 0) {
+          const country = countries[0]
+          resolve(requestCountry(country))
+            .catch(err => {
+              console.log(err)
+            })
+        }
+      })
+    });
+  }
+
+  async function requestCountries(args) {
+    return await requestCountryPromise(args)
+      .then(data => {
+        obj.push(data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
+  requestCountries(args)
+    .then(() => {
+      reply = '::: info \n Requested **Covid-19** information. \n';
+      const table = jsonToTable(obj, columns);
+      reply = reply + table + ' \n';
+      reply = reply + ':::';
+      message.channel.send(reply);
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  /* new Promise((resolve, reject) => {
+    reply = '::: info \n Requested **Covid-19** information.';
     args.map((c, i) => {
       const countries = countryCodes.countries.filter(l => (l.name === c || l.acronym === c))
       if (countries.length > 0) {
@@ -115,22 +183,34 @@ function covid(message) {
         axios.get('https://telog-corona-tracker.herokuapp.com/api/countries/' + country.acronym)
           .then(res => {
             const { last_record } = res.data
-            reply = reply + `${country.name} Cases: ${last_record.cases} Active: ${last_record.active} Deaths: ${last_record.deaths} Recovered: ${last_record.recovered} Critical: ${last_record.critical} CasesPerOneMillion: ${last_record.casesPerOneMillion} \n`
+            // reply = reply + `${country.name} Cases: ${last_record.cases} Active: ${last_record.active} Deaths: ${last_record.deaths} Recovered: ${last_record.recovered} Critical: ${last_record.critical} CasesPerOneMillion: ${last_record.casesPerOneMillion} \n`
+            obj.push({
+              'Name': country.name,
+              'Cases': last_record.cases, 
+              'Active': last_record.active,
+              'Deaths': last_record.deaths,
+              'Recovered': last_record.recovered,
+              'Critical': last_record.critical,
+              'CasesPerOneMillion': last_record.casesPerOneMillion,
+            })
             if (i === args.length - 1)
-              resolve();
+              resolve(); // True, this is wrong, last request can be faster than others
           })
           .catch(err => {
             console.log(err)
             reject();
           })
+          const table = jsonToTable(obj, columns);
+          reply = reply + table;
       } else {
         reply = reply + `${c} is not a valid country! \n`
       }
     })
+  }
   ).then(() => {
-    reply = reply + '\`\`\`';
+    reply = reply + ':::';
     message.channel.send(reply);
-  })
+  }) */
   /* axios.get('https://coronavirus-tracker-api.herokuapp.com/v2/locations')
     .then(res => {
       const { locations } = res.data
