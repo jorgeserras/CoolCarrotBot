@@ -120,7 +120,7 @@ function covid(message) {
   const obj = [];
 
   function requestCountry(country) {
-    axios.get('https://telog-corona-tracker.herokuapp.com/api/countries/' + country.acronym)
+    return axios.get('https://telog-corona-tracker.herokuapp.com/api/countries/' + country.acronym)
       .then(res => {
         const { last_record } = res.data
         console.log('last_record', last_record)
