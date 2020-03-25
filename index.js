@@ -124,6 +124,22 @@ function covid(message) {
       .then(res => {
         const { last_record } = res.data
         console.log('last_record', last_record)
+        message.channel.createMessage(
+          {
+            embed: {
+              title: 'Covid-19 ' + country.name + ' Results',
+              color: '0xff0000',
+              fields: [
+                { name: 'Cases', value: last_record.cases, inline: true },
+                { name: 'Active', value: last_record.active, inline: true },
+                { name: 'Deaths', value: last_record.deaths, inline: true },
+                { name: 'Recovered', value: last_record.recovered, inline: true },
+                { name: 'Critical', value: last_record.critical, inline: true },
+                { name: 'Cases Per One Million', value: last_record.casesPerOneMillion, inline: true },
+              ],
+            }
+          }
+        );
         return {
           Name: country.name,
           Cases: last_record.cases,
@@ -166,12 +182,9 @@ function covid(message) {
   requestCountries(args)
     .then(() => {
       console.log('obj', obj)
-      reply = '::: info \n Requested **Covid-19** information. \n';
-      const table = jsonToTable(obj, columns);
-      reply = reply + table + ' \n';
-      reply = reply + ':::';
-      message.channel.send(reply);
+
     })
+
     .catch(err => {
       console.log(err)
     })
