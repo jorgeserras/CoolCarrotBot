@@ -109,24 +109,32 @@ function covid(message) {
   args.shift();
   console.log(args);
   let reply = '\`\`\`';
-  args.map(c => {
-    const countries = countryCodes.countries.filter(l => (l.name === c || l.acronym === c))
-    console.log(c, countries);
-    if (countries.length > 0) {
-      const country = countries[0]
-      axios.get('https://telog-corona-tracker.herokuapp.com/api/countries/' + country.acronym)
-        .then(res => {
-          const { last_record } = res.data
-          console.log(last_record);
-          reply = reply + `${country.name} Cases: ${last_record.cases} Active: ${last_record.active} Deaths: ${last_record.deaths} Recovered: ${last_record.recovered} Critical: ${last_record.critical} CasesPerOneMillion: ${last_record.casesPerOneMillion} \n`
-        })
-        .catch(err => console.log(err))
-    } else {
-      reply = reply + `${c} is not a valid country! \n`
-    }
+  new Promise((resolve, reject) =>
+    args.map((c, i) => {
+      const countries = countryCodes.countries.filter(l => (l.name === c || l.acronym === c))
+      console.log(c, countries);
+      if (countries.length > 0) {
+        const country = countries[0]
+        axios.get('https://telog-corona-tracker.herokuapp.com/api/countries/' + country.acronym)
+          .then(res => {
+            const { last_record } = res.data
+            console.log(last_record);
+            reply = reply + `${country.name} Cases: ${last_record.cases} Active: ${last_record.active} Deaths: ${last_record.deaths} Recovered: ${last_record.recovered} Critical: ${last_record.critical} CasesPerOneMillion: ${last_record.casesPerOneMillion} \n`
+            if (i === args.length)
+              resolve();
+          })
+          .catch(err => {
+            console.log(err)
+            reject();
+          })
+      } else {
+        reply = reply + `${c} is not a valid country! \n`
+      }
+    })
+  ).then(() => {
+    reply = reply + '\`\`\`';
+    message.channel.send(reply);
   })
-  reply = reply + '\`\`\`';
-  message.channel.send(reply);
   /* axios.get('https://coronavirus-tracker-api.herokuapp.com/v2/locations')
     .then(res => {
       const { locations } = res.data
@@ -144,7 +152,7 @@ function covid(message) {
     })
     .catch(err => console.log(err)) */
 
-    // https://telog-corona-tracker.herokuapp.com/api/countries/GB
+  // https://telog-corona-tracker.herokuapp.com/api/countries/GB
 }
 
 function skip(message, serverQueue) {
