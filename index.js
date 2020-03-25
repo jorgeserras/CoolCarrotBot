@@ -1,11 +1,9 @@
 require("dotenv").config();
-const Discord = require("discord.js");
+const { Client, MessageEmbed } = require('discord.js');
 const ytdl = require("ytdl-core");
 const axios = require('axios');
-const jsonToTable = require('json-to-markdown-table');
 
-const client = new Discord.Client();
-const MessageEmbed = new Discord.MessageEmbed();
+const client = new Client();
 
 const countryCodes = {
   "countries":
