@@ -112,7 +112,7 @@ function covid(message) {
   new Promise((resolve, reject) =>
     args.map((c, i) => {
       const countries = countryCodes.countries.filter(l => (l.name === c || l.acronym === c))
-      console.log(c, countries);
+      console.log(c, countries, i);
       if (countries.length > 0) {
         const country = countries[0]
         axios.get('https://telog-corona-tracker.herokuapp.com/api/countries/' + country.acronym)
