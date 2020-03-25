@@ -104,7 +104,8 @@ async function execute(message, serverQueue) {
 
 
 function covid(message) {
-  const args = message.content.split(" ").shift();
+  const args = message.content.split(" ");
+  args.shift();
   let reply = '\`\`\`';
   args.map(c => {
     const countries = countryCodes.countries.filter(l => l.name === c || l.acronym === c)
