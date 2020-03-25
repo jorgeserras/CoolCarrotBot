@@ -25,7 +25,6 @@
     "dotenv": "^8.2.0",
     "ffmpeg": "0.0.4",
     "fluent-ffmpeg": "^2.1.2",
-    "json-to-markdown-table": "^1.0.0",
     "ytdl-core": "^2.0.1"
   }
 }

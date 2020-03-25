@@ -5,6 +5,7 @@ const axios = require('axios');
 const jsonToTable = require('json-to-markdown-table');
 
 const client = new Discord.Client();
+const MessageEmbed = new Discord.MessageEmbed();
 
 const countryCodes = {
   "countries":
@@ -124,21 +125,14 @@ function covid(message) {
       .then(res => {
         const { last_record } = res.data
         console.log('last_record', last_record)
-        message.channel.createMessage(
-          {
-            embed: {
-              title: 'Covid-19 ' + country.name + ' Results',
-              color: '0xff0000',
-              fields: [
-                { name: 'Cases', value: last_record.cases, inline: true },
-                { name: 'Active', value: last_record.active, inline: true },
-                { name: 'Deaths', value: last_record.deaths, inline: true },
-                { name: 'Recovered', value: last_record.recovered, inline: true },
-                { name: 'Critical', value: last_record.critical, inline: true },
-                { name: 'Cases Per One Million', value: last_record.casesPerOneMillion, inline: true },
-              ],
-            }
-          }
+        message.channel.send(new MessageEmbed().setTitle('Covid-19 ' + country.name + ' Results').setColor('0xff0000').addFields([
+          { name: 'Cases', value: last_record.cases, inline: true },
+          { name: 'Active', value: last_record.active, inline: true },
+          { name: 'Deaths', value: last_record.deaths, inline: true },
+          { name: 'Recovered', value: last_record.recovered, inline: true },
+          { name: 'Critical', value: last_record.critical, inline: true },
+          { name: 'Cases Per One Million', value: last_record.casesPerOneMillion, inline: true },
+        ])
         );
         return {
           Name: country.name,
